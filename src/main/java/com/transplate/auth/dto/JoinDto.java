@@ -8,4 +8,5 @@ import lombok.Setter;
 public class JoinDto {
 	private String userId;
 	private String password;
+	private String userName;
 }

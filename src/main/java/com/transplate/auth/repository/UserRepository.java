@@ -9,5 +9,7 @@ import com.transplate.auth.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByUserIdAndUserPassword(String userId, String userPassword); 
+	Optional<User> findByUserIdAndUserPasswordAndIsDeletedFalse(String userId, String userPassword); 
+	
+	Optional<User> findByUserAndIsDeletedFalse(String userId);
 }

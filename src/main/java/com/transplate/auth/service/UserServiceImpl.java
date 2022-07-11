@@ -3,17 +3,14 @@ package com.transplate.auth.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
 
 import com.transplate.auth.dto.JoinDto;
 import com.transplate.auth.dto.LoginDto;
 import com.transplate.auth.model.User;
 import com.transplate.auth.repository.UserRepository;
 import com.transplate.auth.util.EncryptionUtil;
+import com.transplate.auth.util.TokenUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,28 +22,31 @@ public class UserServiceImpl implements UserService {
 	
 	private final EncryptionUtil encryptionUtil;
 	
+	private final TokenUtil tokenUtil;
+	
 	@Override
-	public boolean join(JoinDto dto) {
-		try {
-			User user = new User();
-			user.setUuid(UUID.randomUUID().toString());
-			user.setUserId(dto.getUserId());
-			user.setPassword(encryptionUtil.encrypt(dto.getPassword()));
-			userRepository.save(user);
-			return true;
-		} catch(Exception e) {
-			return false;
+	public String login(LoginDto dto) throws Exception {
+		Optional<User> wrapped = userRepository.findByUserIdAndUserPasswordAndIsDeletedFalse(dto.getUserId(), encryptionUtil.encrypt(dto.getPassword()));
+		if(wrapped.isPresent()) {
+			return tokenUtil.generateToken(wrapped.get());
+		} else {
+			return "LoginFailed";
 		}
 	}
 	
 	@Override
-	public String login(LoginDto dto) throws Exception {
-		Optional<User> wrapped = userRepository.findByUserIdAndUserPassword(dto.getUserId(), encryptionUtil.encrypt(dto.getPassword()));
-		if(wrapped.isPresent()) {
-			
-			return "";
+	public boolean join(JoinDto dto) throws Exception {
+		Optional<User> wrapped = userRepository.findByUserAndIsDeletedFalse(dto.getUserId());
+		if(!wrapped.isPresent()) {
+			User user = new User();
+			user.setUuid(UUID.randomUUID().toString());
+			user.setUserId(dto.getUserId());
+			user.setPassword(encryptionUtil.encrypt(dto.getPassword()));
+			user.setRole("ROLE_USER");
+			userRepository.save(user);
+			return true;
 		} else {
-			return "LoginFailed";
+			return false;
 		}
 	}
 }
