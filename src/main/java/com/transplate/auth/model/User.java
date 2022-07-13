@@ -12,10 +12,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Entity
 @Table(name = "users")
 @Getter
@@ -49,4 +51,8 @@ public class User {
 	@Column(name = "created_time_at")
 	@CreationTimestamp
 	private Date createdTimeAt;
+	
+	@Column(name = "is_deleted")
+	@Builder.Default
+	private Boolean isDeleted = false;
 }

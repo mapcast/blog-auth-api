@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public String login(LoginDto dto) throws Exception {
-		Optional<User> wrapped = userRepository.findByUserIdAndUserPasswordAndIsDeletedFalse(dto.getUserId(), encryptionUtil.encrypt(dto.getPassword()));
+		Optional<User> wrapped = userRepository.findByUserIdAndPasswordAndIsDeletedFalse(dto.getUserId(), encryptionUtil.encrypt(dto.getPassword()));
 		if(wrapped.isPresent()) {
 			return tokenUtil.generateToken(wrapped.get());
 		} else {
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public boolean join(JoinDto dto) throws Exception {
-		Optional<User> wrapped = userRepository.findByUserAndIsDeletedFalse(dto.getUserId());
+		Optional<User> wrapped = userRepository.findByUserIdAndIsDeletedFalse(dto.getUserId());
 		if(!wrapped.isPresent()) {
 			User user = new User();
 			user.setUuid(UUID.randomUUID().toString());
