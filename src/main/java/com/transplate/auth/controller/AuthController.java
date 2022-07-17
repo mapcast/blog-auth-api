@@ -1,6 +1,7 @@
 package com.transplate.auth.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,14 +18,14 @@ public class AuthController {
 	
 	private final UserService userService;
 	
-	@GetMapping("/login")
-	public String login(LoginDto dto) throws Exception {
+	@PostMapping("/login")
+	public String login(@RequestBody LoginDto dto) throws Exception {
 		String token = userService.login(dto);
 		return token; 
 	}
 	
-	@GetMapping("/join")
-	public String join(JoinDto dto) throws Exception {
+	@PostMapping("/join")
+	public String join(@RequestBody JoinDto dto) throws Exception {
 		userService.join(dto);
 		return "SUCCESS";
 	}
