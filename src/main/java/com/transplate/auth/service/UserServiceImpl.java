@@ -49,4 +49,9 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 	}
+	
+	@Override
+	public User getUserByUserId(String userId) {
+		return userRepository.findByUserIdAndIsDeletedFalse(userId).orElseGet(null);
+	}
 }

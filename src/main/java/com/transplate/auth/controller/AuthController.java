@@ -1,12 +1,15 @@
 package com.transplate.auth.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.transplate.auth.dto.JoinDto;
 import com.transplate.auth.dto.LoginDto;
+import com.transplate.auth.model.User;
 import com.transplate.auth.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,5 +31,10 @@ public class AuthController {
 	public String join(@RequestBody JoinDto dto) throws Exception {
 		userService.join(dto);
 		return "SUCCESS";
+	}
+	
+	@GetMapping("/user")
+	public User getUserByUserId(@RequestParam String userId) {
+		return userService.getUserByUserId(userId);
 	}
 }

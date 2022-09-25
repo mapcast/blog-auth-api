@@ -20,7 +20,7 @@ public class TokenUtil {
 	public String generateToken(User user) {
 		Date now = new Date();
 		return Jwts.builder()
-				.setSubject(user.getUserName())
+				.setSubject(user.getUserId())
 				.setHeader(createHeader())
 				.setClaims(createClaims(user))
 				.setExpiration(new Date(now.getTime() + expireTime))
@@ -37,12 +37,12 @@ public class TokenUtil {
 
 	private Map<String, Object> createClaims(User user) {
 	    Map<String, Object> claims = new HashMap<>();
-	    claims.put("username", user.getUserName());
+	    claims.put("userId", user.getUserId());
 	    claims.put("roles", user.getRole());
 	    return claims;
 	}
 	
 	private String getUserNameFromClaim(String token) {
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("token").toString();
+		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userId").toString();
 	}
 }
