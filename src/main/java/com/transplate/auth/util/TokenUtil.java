@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transplate.auth.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -36,13 +39,14 @@ public class TokenUtil {
 	}
 
 	private Map<String, Object> createClaims(User user) {
+		ObjectMapper mapper = new ObjectMapper();
 	    Map<String, Object> claims = new HashMap<>();
-	    claims.put("userId", user.getUserId());
-	    claims.put("roles", user.getRole());
+	    try {
+			String userString = mapper.writeValueAsString(user);
+		    claims.put("userInfo", userString);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 	    return claims;
-	}
-	
-	private String getUserNameFromClaim(String token) {
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("userId").toString();
 	}
 }
